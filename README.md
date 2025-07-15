@@ -44,7 +44,7 @@ go get github.com/joho/godotenv
 Crear un archivo `.env` en la raíz del proyecto:
 
 ```env
-PORT=8080
+PORT=5050
 JWT_SECRET=tu_clave_secreta_jwt
 DATABASE_URL=tu_url_de_base_de_datos
 ```
@@ -57,7 +57,7 @@ DATABASE_URL=tu_url_de_base_de_datos
 go run main.go
 ```
 
-El servidor se ejecutará en `http://localhost:8080` (o el puerto configurado en `.env`)
+El servidor se ejecutará en `http://localhost:5050` (o el puerto configurado en `.env`)
 
 ## 🛠️ Desarrollo
 
