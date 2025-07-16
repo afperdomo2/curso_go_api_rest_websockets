@@ -28,14 +28,14 @@ type HomeReponse struct {
 //   - Content-Type: application/json
 //   - Status Code: 200 (OK)
 //   - Body: JSON con mensaje de bienvenida y estado
-func HomeHandler(server server.Server) http.HandlerFunc {
-	return func(writer http.ResponseWriter, request *http.Request) {
+func HomeHandler(s server.Server) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
 		// Establece el tipo de contenido como JSON
-		writer.Header().Set("Content-Type", "application/json")
+		w.Header().Set("Content-Type", "application/json")
 		// Establece el código de estado HTTP 200 (OK)
-		writer.WriteHeader(http.StatusOK)
+		w.WriteHeader(http.StatusOK)
 		// Codifica y envía la respuesta JSON al cliente
-		json.NewEncoder(writer).Encode(HomeReponse{
+		json.NewEncoder(w).Encode(HomeReponse{
 			Message: "Welcome to the Go REST API",
 			Status:  true,
 		})

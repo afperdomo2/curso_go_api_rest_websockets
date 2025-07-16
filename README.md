@@ -38,6 +38,7 @@ go get github.com/gorilla/mux
 go get github.com/gorilla/websocket
 go get github.com/joho/godotenv
 go get github.com/lib/pq
+go get github.com/segmentio/ksuid
 ```
 
 ### 3. Configurar variables de entorno
@@ -89,8 +90,7 @@ go mod tidy
 ## 🐳 Docker
 
 ```sh
-# Levantar la base de datos para las ordenes
-docker-compose up -d
+
 ```
 
 ## 📄 Licencia
