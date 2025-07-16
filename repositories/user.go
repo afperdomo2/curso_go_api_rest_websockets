@@ -11,12 +11,20 @@ type UserRepository interface {
 	FindById(ctx context.Context, id int64) (*models.User, error)
 	Update(ctx context.Context, user *models.User) error
 	Delete(ctx context.Context, id int64) error
+	Close() error // Método para cerrar la conexión a la base de datos
 }
 
 var implementation UserRepository
 
 func SetUserRepository(repository UserRepository) {
 	implementation = repository
+}
+
+func Close() error {
+	if implementation != nil {
+		return implementation.Close()
+	}
+	return nil
 }
 
 func Create(ctx context.Context, user *models.User) error {
