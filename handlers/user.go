@@ -5,6 +5,7 @@ import (
 	"afperdomo2/go/rest-ws/repository"
 	"afperdomo2/go/rest-ws/server"
 	"encoding/json"
+	"log"
 	"net/http"
 )
 
@@ -15,7 +16,6 @@ type SignupRequest struct {
 }
 
 type SignupResponse struct {
-	Id       int64  `json:"id"`
 	Email    string `json:"email"`
 	Username string `json:"username"`
 }
@@ -42,8 +42,8 @@ func SingUpHandler(s server.Server) http.HandlerFunc {
 
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusCreated)
+		log.Printf("User created successfully: %v", newUser)
 		json.NewEncoder(w).Encode(SignupResponse{
-			Id:       newUser.Id,
 			Email:    newUser.Email,
 			Username: newUser.Username,
 		})

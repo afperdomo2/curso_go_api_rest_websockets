@@ -29,14 +29,14 @@ func (r *PostgresRepository) Close() error {
 	return nil // Si no hay conexión, retorna nil
 }
 
-func (r *PostgresRepository) Create(ctx context.Context, user *models.User) error {
+func (r *PostgresRepository) CreateUser(ctx context.Context, user *models.User) error {
 	// Utiliza un contexto para manejar la operación de forma segura
 	// Realiza una inserción en la base de datos para crear un nuevo usuario
 	_, err := r.db.ExecContext(ctx, "INSERT INTO users (name, email, password) VALUES ($1, $2, $3)", user.Username, user.Email, user.Password)
 	return err
 }
 
-func (r *PostgresRepository) FindAll(ctx context.Context) ([]*models.User, error) {
+func (r *PostgresRepository) GetAllUsers(ctx context.Context) ([]*models.User, error) {
 	// Realiza una consulta a la base de datos para obtener todos los usuarios
 	// Utiliza un contexto para manejar la operación de forma segura
 	rows, err := r.db.QueryContext(ctx, "SELECT id, name, email FROM users")
@@ -58,7 +58,7 @@ func (r *PostgresRepository) FindAll(ctx context.Context) ([]*models.User, error
 	return users, nil
 }
 
-func (r *PostgresRepository) FindById(ctx context.Context, id int64) (*models.User, error) {
+func (r *PostgresRepository) GetUserById(ctx context.Context, id int64) (*models.User, error) {
 	// Realiza una consulta a la base de datos para encontrar un usuario por su ID
 	// Utiliza un contexto para manejar la operación de forma segura
 	row := r.db.QueryRowContext(ctx, "SELECT id, name, email FROM users WHERE id = $1", id)

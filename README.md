@@ -56,7 +56,11 @@ DATABASE_URL=tu_url_de_base_de_datos
 ### Ejecutar el servidor
 
 ```sh
+# Ejecutar el proyecto
 go run main.go
+
+# Ejecutar en modo watch (solo si se tiene instalado nodemon)
+nodemon --exec "go run main.go" --ext go
 ```
 
 El servidor se ejecutará en `http://localhost:5050` (o el puerto configurado en `.env`)
@@ -90,7 +94,8 @@ go mod tidy
 ## 🐳 Docker
 
 ```sh
-
+# Levantar la base de datos para los usuarios
+docker-compose up -d
 ```
 
 ## 📄 Licencia

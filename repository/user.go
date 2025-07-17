@@ -6,15 +6,15 @@ import (
 )
 
 type UserRepository interface {
-	Create(ctx context.Context, user *models.User) error
-	GetAll(ctx context.Context) ([]*models.User, error)
-	GetById(ctx context.Context, id int64) (*models.User, error)
+	CreateUser(ctx context.Context, user *models.User) error
+	GetAllUsers(ctx context.Context) ([]*models.User, error)
+	GetUserById(ctx context.Context, id int64) (*models.User, error)
 	Close() error // Método para cerrar la conexión a la base de datos
 }
 
 var implementation UserRepository
 
-func SetUserRepository(repository UserRepository) {
+func SetRepository(repository UserRepository) {
 	implementation = repository
 }
 
@@ -26,13 +26,13 @@ func Close() error {
 }
 
 func CreateUser(ctx context.Context, user *models.User) error {
-	return implementation.Create(ctx, user)
+	return implementation.CreateUser(ctx, user)
 }
 
 func GetAllUsers(ctx context.Context) ([]*models.User, error) {
-	return implementation.GetAll(ctx)
+	return implementation.GetAllUsers(ctx)
 }
 
 func GetUserById(ctx context.Context, id int64) (*models.User, error) {
-	return implementation.GetById(ctx, id)
+	return implementation.GetUserById(ctx, id)
 }
