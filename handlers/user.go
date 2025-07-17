@@ -11,13 +11,11 @@ import (
 
 type SignupRequest struct {
 	Email    string `json:"email"`
-	Username string `json:"username"`
 	Password string `json:"password"`
 }
 
 type SignupResponse struct {
-	Email    string `json:"email"`
-	Username string `json:"username"`
+	Email string `json:"email"`
 }
 
 func SingUpHandler(s server.Server) http.HandlerFunc {
@@ -30,7 +28,6 @@ func SingUpHandler(s server.Server) http.HandlerFunc {
 
 		var newUser = models.User{
 			Email:    signupRequest.Email,
-			Username: signupRequest.Username,
 			Password: signupRequest.Password,
 		}
 		err := repository.CreateUser(r.Context(), &newUser)
@@ -44,8 +41,7 @@ func SingUpHandler(s server.Server) http.HandlerFunc {
 		w.WriteHeader(http.StatusCreated)
 		log.Printf("User created successfully: %v", newUser)
 		json.NewEncoder(w).Encode(SignupResponse{
-			Email:    newUser.Email,
-			Username: newUser.Username,
+			Email: newUser.Email,
 		})
 	}
 }

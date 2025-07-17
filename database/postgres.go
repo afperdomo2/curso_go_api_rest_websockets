@@ -32,14 +32,14 @@ func (r *PostgresRepository) Close() error {
 func (r *PostgresRepository) CreateUser(ctx context.Context, user *models.User) error {
 	// Utiliza un contexto para manejar la operación de forma segura
 	// Realiza una inserción en la base de datos para crear un nuevo usuario
-	_, err := r.db.ExecContext(ctx, "INSERT INTO users (name, email, password) VALUES ($1, $2, $3)", user.Username, user.Email, user.Password)
+	_, err := r.db.ExecContext(ctx, "INSERT INTO users (email, password) VALUES ($1, $2)", user.Email, user.Password)
 	return err
 }
 
 func (r *PostgresRepository) GetAllUsers(ctx context.Context) ([]*models.User, error) {
 	// Realiza una consulta a la base de datos para obtener todos los usuarios
 	// Utiliza un contexto para manejar la operación de forma segura
-	rows, err := r.db.QueryContext(ctx, "SELECT id, name, email FROM users")
+	rows, err := r.db.QueryContext(ctx, "SELECT id, email FROM users")
 	if err != nil {
 		return nil, err
 	}
@@ -50,7 +50,7 @@ func (r *PostgresRepository) GetAllUsers(ctx context.Context) ([]*models.User, e
 	// Itera sobre los resultados de la consulta y los agrega al slice
 	for rows.Next() {
 		var user models.User
-		if err := rows.Scan(&user.Id, &user.Username, &user.Email); err != nil {
+		if err := rows.Scan(&user.Id, &user.Email); err != nil {
 			return nil, err
 		}
 		users = append(users, &user)
@@ -61,11 +61,11 @@ func (r *PostgresRepository) GetAllUsers(ctx context.Context) ([]*models.User, e
 func (r *PostgresRepository) GetUserById(ctx context.Context, id int64) (*models.User, error) {
 	// Realiza una consulta a la base de datos para encontrar un usuario por su ID
 	// Utiliza un contexto para manejar la operación de forma segura
-	row := r.db.QueryRowContext(ctx, "SELECT id, name, email FROM users WHERE id = $1", id)
+	row := r.db.QueryRowContext(ctx, "SELECT id, email FROM users WHERE id = $1", id)
 
 	var user models.User
 	// Escanea los resultados de la consulta en la estructura del usuario
-	if err := row.Scan(&user.Id, &user.Username, &user.Email); err != nil {
+	if err := row.Scan(&user.Id, &user.Email); err != nil {
 		if err == sql.ErrNoRows {
 			return nil, errors.New("user not found")
 		}
