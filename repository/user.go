@@ -9,6 +9,7 @@ type UserRepository interface {
 	CreateUser(ctx context.Context, user *models.User) error
 	GetAllUsers(ctx context.Context) ([]*models.User, error)
 	GetUserById(ctx context.Context, id int64) (*models.User, error)
+	GetUserByEmail(ctx context.Context, email string) (*models.User, error)
 	Close() error // Método para cerrar la conexión a la base de datos
 }
 
@@ -35,4 +36,8 @@ func GetAllUsers(ctx context.Context) ([]*models.User, error) {
 
 func GetUserById(ctx context.Context, id int64) (*models.User, error) {
 	return implementation.GetUserById(ctx, id)
+}
+
+func GetUserByEmail(ctx context.Context, email string) (*models.User, error) {
+	return implementation.GetUserByEmail(ctx, email)
 }

@@ -73,3 +73,16 @@ func (r *PostgresRepository) GetUserById(ctx context.Context, id int64) (*models
 	}
 	return &user, nil
 }
+
+func (r *PostgresRepository) GetUserByEmail(ctx context.Context, email string) (*models.User, error) {
+	row := r.db.QueryRowContext(ctx, "SELECT id, email, password FROM users WHERE email = $1", email)
+
+	var user models.User
+	if err := row.Scan(&user.Id, &user.Email, &user.Password); err != nil {
+		if err == sql.ErrNoRows {
+			return nil, errors.New("user not found")
+		}
+		return nil, err
+	}
+	return &user, nil
+}
