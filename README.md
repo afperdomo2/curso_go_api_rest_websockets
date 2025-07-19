@@ -100,6 +100,45 @@ go mod tidy
 docker-compose up -d
 ```
 
+## 🔎 Testear endpoints
+
+### 🌎 Crear un nuevo usuario
+
+```sh
+curl --location 'http://localhost:5050/signup' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+    "email": "usuario123@gmail.com",
+    "password": "contrasena123"
+}'
+```
+
+### 🌎 Login
+
+```sh
+curl --location 'http://localhost:5050/login' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+    "email": "usuario123@gmail.com",
+    "password": "contrasena123"
+}'
+```
+
+### 🔒 Consultar los datos del usuario logueado
+
+Reemplazar el token por uno válido/vigente
+
+```sh
+
+curl --location --request GET 'http://localhost:5050/user-info' \
+--header 'Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxMSwiZXhwIjoxNzUyOTg4MTU2fQ.QJEF2p18MeoALOxCAjQLKvz5xadIH9T-TC_ZaEvt2sY' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+    "email": "5gg131232@gmail.com",
+    "password": "22222"
+}'
+```
+
 ## 📄 Licencia
 
 Este proyecto está bajo la Licencia MIT. Ver `LICENSE` para más detalles.
