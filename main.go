@@ -2,6 +2,7 @@ package main
 
 import (
 	"afperdomo2/go/rest-ws/handlers"
+	"afperdomo2/go/rest-ws/middlewares"
 	"afperdomo2/go/rest-ws/server"
 	"context"
 	"log"
@@ -33,9 +34,13 @@ func main() {
 }
 
 func BindRoutes(s server.Server, r *mux.Router) {
+	// Middleware de autenticación
+	r.Use(middlewares.CheckAuthMiddleware(s))
+
 	r.HandleFunc("/", handlers.HomeHandler(s)).Methods(http.MethodGet)
 
 	// Aquí puedes agregar más rutas según sea necesario
 	r.HandleFunc("/signup", handlers.SingUpHandler(s)).Methods(http.MethodPost)
 	r.HandleFunc("/login", handlers.LoginHandler(s)).Methods(http.MethodPost)
+	r.HandleFunc("/user-info", handlers.GetUserFromTokenHandler(s)).Methods(http.MethodGet)
 }

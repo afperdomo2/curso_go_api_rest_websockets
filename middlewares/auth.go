@@ -21,6 +21,9 @@ func shouldCheckToken(route string) bool {
 	return !slices.Contains(PUBLIC_ENDPOINTS, route)
 }
 
+// CheckAuthMiddleware verifica el token JWT en las rutas protegidas
+// Si el token es válido, permite el acceso a la ruta; de lo contrario, retorna un error 401 Unauthorized
+// Este middleware se aplica a todas las rutas excepto a las que están en PUBLIC_ENDPOINTS
 func CheckAuthMiddleware(s server.Server) func(h http.Handler) http.Handler {
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -32,7 +35,7 @@ func CheckAuthMiddleware(s server.Server) func(h http.Handler) http.Handler {
 
 			// Si la ruta requiere verificación de token, se verifica el JWT
 			tokenString := strings.TrimSpace(r.Header.Get("Authorization"))
-			_, err := jwt.ParseWithClaims(tokenString, &jwt.StandardClaims{}, func(token *jwt.Token) (interface{}, error) {
+			_, err := jwt.ParseWithClaims(tokenString, &jwt.StandardClaims{}, func(token *jwt.Token) (any, error) {
 				return []byte(s.Config().JWTSecret), nil
 			})
 			if err != nil {
