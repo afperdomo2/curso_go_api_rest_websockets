@@ -14,6 +14,7 @@ type Repository interface {
 	CreatePost(ctx context.Context, post *models.Post) error
 	UpdatePost(ctx context.Context, id int64, changes *models.Post) error
 	GetPostById(ctx context.Context, id int64) (*models.Post, error)
+	DeletePost(ctx context.Context, id int64, userId int64) error
 
 	Close() error // Método para cerrar la conexión a la base de datos
 }
@@ -59,4 +60,8 @@ func UpdatePost(ctx context.Context, id int64, changes *models.Post) error {
 
 func GetPostById(ctx context.Context, id int64) (*models.Post, error) {
 	return implementation.GetPostById(ctx, id)
+}
+
+func DeletePost(ctx context.Context, id int64, userId int64) error {
+	return implementation.DeletePost(ctx, id, userId)
 }

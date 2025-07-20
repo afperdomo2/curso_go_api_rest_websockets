@@ -120,3 +120,33 @@ func GetPostByIdHandler(s server.Server) http.HandlerFunc {
 		json.NewEncoder(w).Encode(post)
 	}
 }
+
+func DeletePostHandler(s server.Server) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		postIdStr := mux.Vars(r)["id"]
+		if postIdStr == "" {
+			http.Error(w, "Post ID is required", http.StatusBadRequest)
+			return
+		}
+
+		postId, err := strconv.ParseInt(postIdStr, 10, 64)
+		if err != nil {
+			http.Error(w, "Invalid Post ID", http.StatusBadRequest)
+			return
+		}
+
+		user := services.UserServiceInstance.GetUserFromToken(r, s, w)
+
+		err = repository.DeletePost(r.Context(), postId, user.Id)
+		if err != nil {
+			http.Error(w, "Error deleting post: "+err.Error(), http.StatusInternalServerError)
+			return
+		}
+
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+		json.NewEncoder(w).Encode(PostUpdateResponse{
+			Message: "Post deleted successfully",
+		})
+	}
+}

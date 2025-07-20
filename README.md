@@ -157,6 +157,13 @@ curl --location --request PUT 'http://localhost:5050/posts/1' \
 }'
 ```
 
+### 🔒 Borrar un Post existente
+
+```sh
+curl --location --request DELETE 'http://localhost:5050/posts/3' \
+--header 'Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJleHAiOjE3NTMwNzAyMzV9.EBjG2RFIFX7KTKhAuruW3qEPWMmSv8sK_X9FjqFjoyo'
+```
+
 ### 🔒 Obtener un post por su ID
 
 ```sh
