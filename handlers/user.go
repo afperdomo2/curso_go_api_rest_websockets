@@ -4,11 +4,10 @@ import (
 	"afperdomo2/go/rest-ws/models"
 	"afperdomo2/go/rest-ws/repository"
 	"afperdomo2/go/rest-ws/server"
-	"context"
+	"afperdomo2/go/rest-ws/services"
 	"encoding/json"
 	"log"
 	"net/http"
-	"strings"
 	"time"
 
 	"github.com/golang-jwt/jwt"
@@ -116,32 +115,9 @@ func LoginHandler(s server.Server) http.HandlerFunc {
 // Valida el token JWT y devuelve el usuario asociado
 func GetUserFromTokenHandler(s server.Server) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		tokenString := strings.TrimSpace(r.Header.Get("Authorization"))
-		if tokenString == "" {
-			http.Error(w, "Missing Authorization header", http.StatusUnauthorized)
-			return
-		}
-
-		token, err := jwt.ParseWithClaims(tokenString, &models.AppClaims{}, func(token *jwt.Token) (any, error) {
-			return []byte(s.Config().JWTSecret), nil
-		})
-
-		if err != nil || !token.Valid {
-			http.Error(w, "Invalid token", http.StatusUnauthorized)
-			return
-		}
-
-		if claims, ok := token.Claims.(*models.AppClaims); ok && token.Valid {
-			user, err := repository.GetUserById(context.Background(), claims.UserId)
-			if err != nil {
-				http.Error(w, "Error retrieving user: "+err.Error(), http.StatusInternalServerError)
-				return
-			}
-			w.Header().Set("Content-Type", "application/json")
-			w.WriteHeader(http.StatusOK)
-			json.NewEncoder(w).Encode(user)
-		} else {
-			http.Error(w, "Invalid token claims", http.StatusUnauthorized)
-		}
+		user := services.UserServiceInstance.GetUserFromToken(r, s, w)
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+		json.NewEncoder(w).Encode(user)
 	}
 }

@@ -86,3 +86,8 @@ func (r *PostgresRepository) GetUserByEmail(ctx context.Context, email string) (
 	}
 	return &user, nil
 }
+
+func (r *PostgresRepository) CreatePost(ctx context.Context, post *models.Post) error {
+	_, err := r.db.ExecContext(ctx, "INSERT INTO posts (title, content, user_id) VALUES ($1, $2, $3)", post.Title, post.Content, post.UserID)
+	return err
+}
