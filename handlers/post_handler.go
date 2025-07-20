@@ -12,14 +12,18 @@ import (
 	"github.com/gorilla/mux"
 )
 
-type CreatePostRequest struct {
+type UpsertPostRequest struct {
 	Title   string `json:"title"`
 	Content string `json:"content"`
 }
 
+type PostUpdateResponse struct {
+	Message string `json:"message"`
+}
+
 func CreatePostHandler(s server.Server) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		var req CreatePostRequest
+		var req UpsertPostRequest
 		if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 			http.Error(w, "Invalid request body", http.StatusBadRequest)
 			return
@@ -42,6 +46,46 @@ func CreatePostHandler(s server.Server) http.HandlerFunc {
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusCreated)
 		json.NewEncoder(w).Encode(post)
+	}
+}
+
+func UpdatePostHandler(s server.Server) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		var req UpsertPostRequest
+		if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+			http.Error(w, "Invalid request body", http.StatusBadRequest)
+			return
+		}
+
+		postIdStr := mux.Vars(r)["id"]
+		if postIdStr == "" {
+			http.Error(w, "Post ID is required", http.StatusBadRequest)
+			return
+		}
+
+		postId, err := strconv.ParseInt(postIdStr, 10, 64)
+		if err != nil {
+			http.Error(w, "Invalid Post ID", http.StatusBadRequest)
+			return
+		}
+
+		post := &models.Post{
+			Id:      postId,
+			Title:   req.Title,
+			Content: req.Content,
+		}
+
+		err = repository.UpdatePost(r.Context(), postId, post)
+		if err != nil {
+			http.Error(w, "Error updating post: "+err.Error(), http.StatusInternalServerError)
+			return
+		}
+
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+		json.NewEncoder(w).Encode(PostUpdateResponse{
+			Message: "Post updated successfully",
+		})
 	}
 }
 
@@ -72,6 +116,7 @@ func GetPostByIdHandler(s server.Server) http.HandlerFunc {
 		}
 
 		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
 		json.NewEncoder(w).Encode(post)
 	}
 }

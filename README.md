@@ -102,7 +102,7 @@ docker-compose up -d
 
 ## 🔎 Testear endpoints
 
-**NOTA:** Los endpoints que tienen 🔒 son privados, se debe reemplazar el token, por uno vigente
+**NOTA:** Los endpoints que tienen 🔒 son privados, se debe reemplazar el token, por uno vigente (generado en el Login)
 
 ### 🌎 Crear un nuevo usuario
 
@@ -142,6 +142,18 @@ curl --location 'http://localhost:5050/posts' \
 --data '{
     "title": "Post nuevo",
     "content": "Contendio del post"
+}'
+```
+
+### 🔒 Actualizar un Post existente
+
+```sh
+curl --location --request PUT 'http://localhost:5050/posts/1' \
+--header 'Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJleHAiOjE3NTMwNzAyMzV9.EBjG2RFIFX7KTKhAuruW3qEPWMmSv8sK_X9FjqFjoyo' \
+--header 'Content-Type: application/json' \
+--data '{
+    "title": "Nuevo título",
+    "content": "Contendio actualizado"
 }'
 ```
 

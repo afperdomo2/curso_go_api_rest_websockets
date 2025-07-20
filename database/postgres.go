@@ -104,3 +104,11 @@ func (r *PostgresRepository) GetPostById(ctx context.Context, id int64) (*models
 	}
 	return &post, nil
 }
+
+func (r *PostgresRepository) UpdatePost(ctx context.Context, id int64, changes *models.Post) error {
+	_, err := r.db.ExecContext(ctx, "UPDATE posts SET title = $1, content = $2 WHERE id = $3", changes.Title, changes.Content, id)
+	if err != nil {
+		return err
+	}
+	return nil
+}
