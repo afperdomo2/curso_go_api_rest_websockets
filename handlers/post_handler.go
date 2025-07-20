@@ -7,6 +7,9 @@ import (
 	"afperdomo2/go/rest-ws/services"
 	"encoding/json"
 	"net/http"
+	"strconv"
+
+	"github.com/gorilla/mux"
 )
 
 type CreatePostRequest struct {
@@ -38,6 +41,37 @@ func CreatePostHandler(s server.Server) http.HandlerFunc {
 
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusCreated)
+		json.NewEncoder(w).Encode(post)
+	}
+}
+
+func GetPostByIdHandler(s server.Server) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		postIdStr := mux.Vars(r)["id"]
+		if postIdStr == "" {
+			http.Error(w, "Post ID is required", http.StatusBadRequest)
+			return
+		}
+
+		// Convert postIdStr to int64
+		postId, err := strconv.ParseInt(postIdStr, 10, 64)
+		if err != nil {
+			http.Error(w, "Invalid Post ID", http.StatusBadRequest)
+			return
+		}
+
+		post, err := repository.GetPostById(r.Context(), postId)
+		if err != nil {
+			http.Error(w, "Error fetching post: "+err.Error(), http.StatusInternalServerError)
+			return
+		}
+
+		if post == nil {
+			http.Error(w, "Post not found", http.StatusNotFound)
+			return
+		}
+
+		w.Header().Set("Content-Type", "application/json")
 		json.NewEncoder(w).Encode(post)
 	}
 }

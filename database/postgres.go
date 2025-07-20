@@ -91,3 +91,16 @@ func (r *PostgresRepository) CreatePost(ctx context.Context, post *models.Post) 
 	_, err := r.db.ExecContext(ctx, "INSERT INTO posts (title, content, user_id) VALUES ($1, $2, $3)", post.Title, post.Content, post.UserID)
 	return err
 }
+
+func (r *PostgresRepository) GetPostById(ctx context.Context, id int64) (*models.Post, error) {
+	row := r.db.QueryRowContext(ctx, "SELECT id, title, content, user_id FROM posts WHERE id = $1", id)
+
+	var post models.Post
+	if err := row.Scan(&post.Id, &post.Title, &post.Content, &post.UserID); err != nil {
+		if err == sql.ErrNoRows {
+			return nil, errors.New("post not found")
+		}
+		return nil, err
+	}
+	return &post, nil
+}

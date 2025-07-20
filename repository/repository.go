@@ -12,6 +12,7 @@ type Repository interface {
 	GetUserByEmail(ctx context.Context, email string) (*models.User, error)
 
 	CreatePost(ctx context.Context, post *models.Post) error
+	GetPostById(ctx context.Context, id int64) (*models.Post, error)
 
 	Close() error // Método para cerrar la conexión a la base de datos
 }
@@ -49,4 +50,8 @@ func GetUserByEmail(ctx context.Context, email string) (*models.User, error) {
 // Post
 func CreatePost(ctx context.Context, post *models.Post) error {
 	return implementation.CreatePost(ctx, post)
+}
+
+func GetPostById(ctx context.Context, id int64) (*models.Post, error) {
+	return implementation.GetPostById(ctx, id)
 }

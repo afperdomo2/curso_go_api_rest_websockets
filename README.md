@@ -102,6 +102,8 @@ docker-compose up -d
 
 ## 🔎 Testear endpoints
 
+**NOTA:** Los endpoints que tienen 🔒 son privados, se debe reemplazar el token, por uno vigente
+
 ### 🌎 Crear un nuevo usuario
 
 ```sh
@@ -126,17 +128,28 @@ curl --location 'http://localhost:5050/login' \
 
 ### 🔒 Consultar los datos del usuario logueado
 
-Reemplazar el token por uno válido/vigente
+```sh
+curl --location 'http://localhost:5050/user-info' \
+--header 'Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoyLCJleHAiOjE3NTMwNzM5NDd9.1a8kPMPdMR-EZ_p7e0ZwPV-sr3wkzJa1Qp_8fmFFp4E'
+```
+
+### 🔒 Crear un Post
 
 ```sh
-
-curl --location --request GET 'http://localhost:5050/user-info' \
---header 'Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxMSwiZXhwIjoxNzUyOTg4MTU2fQ.QJEF2p18MeoALOxCAjQLKvz5xadIH9T-TC_ZaEvt2sY' \
+curl --location 'http://localhost:5050/posts' \
+--header 'Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJleHAiOjE3NTMwNzAyMzV9.EBjG2RFIFX7KTKhAuruW3qEPWMmSv8sK_X9FjqFjoyo' \
 --header 'Content-Type: application/json' \
---data-raw '{
-    "email": "5gg131232@gmail.com",
-    "password": "22222"
+--data '{
+    "title": "Post nuevo",
+    "content": "Contendio del post"
 }'
+```
+
+### 🔒 Obtener un post por su ID
+
+```sh
+curl --location 'http://localhost:5050/posts/2' \
+--header 'Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxMSwiZXhwIjoxNzUyOTg4MTU2fQ.QJEF2p18MeoALOxCAjQLKvz5xadIH9T-TC_ZaEvt2sY'
 ```
 
 ## 📄 Licencia
