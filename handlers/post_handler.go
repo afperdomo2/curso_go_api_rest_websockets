@@ -150,3 +150,30 @@ func DeletePostHandler(s server.Server) http.HandlerFunc {
 		})
 	}
 }
+
+func GetAllPostsHandler(s server.Server) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		pageStr := r.URL.Query().Get("page")
+		limitStr := r.URL.Query().Get("limit")
+
+		page, err := strconv.ParseInt(pageStr, 10, 64)
+		if err != nil || page < 1 {
+			page = 1
+		}
+
+		limit, err := strconv.ParseInt(limitStr, 10, 64)
+		if err != nil || limit < 1 {
+			limit = 10
+		}
+
+		posts, err := repository.GetAllPosts(r.Context(), page, limit)
+		if err != nil {
+			http.Error(w, "Error fetching posts: "+err.Error(), http.StatusInternalServerError)
+			return
+		}
+
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+		json.NewEncoder(w).Encode(posts)
+	}
+}

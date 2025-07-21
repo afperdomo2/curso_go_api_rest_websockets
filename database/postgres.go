@@ -36,28 +36,6 @@ func (r *PostgresRepository) CreateUser(ctx context.Context, user *models.User) 
 	return err
 }
 
-func (r *PostgresRepository) GetAllUsers(ctx context.Context) ([]*models.User, error) {
-	// Realiza una consulta a la base de datos para obtener todos los usuarios
-	// Utiliza un contexto para manejar la operación de forma segura
-	rows, err := r.db.QueryContext(ctx, "SELECT id, email FROM users")
-	if err != nil {
-		return nil, err
-	}
-	defer rows.Close() // Asegura que los recursos se liberen después de la consulta
-
-	var users []*models.User // Inicializa un slice para almacenar los usuarios
-
-	// Itera sobre los resultados de la consulta y los agrega al slice
-	for rows.Next() {
-		var user models.User
-		if err := rows.Scan(&user.Id, &user.Email); err != nil {
-			return nil, err
-		}
-		users = append(users, &user)
-	}
-	return users, nil
-}
-
 func (r *PostgresRepository) GetUserById(ctx context.Context, id int64) (*models.User, error) {
 	// Realiza una consulta a la base de datos para encontrar un usuario por su ID
 	// Utiliza un contexto para manejar la operación de forma segura
@@ -116,4 +94,23 @@ func (r *PostgresRepository) UpdatePost(ctx context.Context, id int64, changes *
 func (r *PostgresRepository) DeletePost(ctx context.Context, id int64, userId int64) error {
 	_, err := r.db.ExecContext(ctx, "DELETE FROM posts WHERE id = $1 AND user_id = $2", id, userId)
 	return err
+}
+
+func (r *PostgresRepository) GetAllPosts(ctx context.Context, page int64, limit int64) ([]*models.Post, error) {
+	offset := (page - 1) * limit
+	rows, err := r.db.QueryContext(ctx, "SELECT id, title, content, user_id, created_at FROM posts ORDER BY id DESC LIMIT $1 OFFSET $2", limit, offset)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var posts []*models.Post
+	for rows.Next() {
+		var post models.Post
+		if err := rows.Scan(&post.Id, &post.Title, &post.Content, &post.UserID, &post.CreatedAt); err != nil {
+			return nil, err
+		}
+		posts = append(posts, &post)
+	}
+	return posts, nil
 }

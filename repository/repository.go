@@ -7,7 +7,6 @@ import (
 
 type Repository interface {
 	CreateUser(ctx context.Context, user *models.User) error
-	GetAllUsers(ctx context.Context) ([]*models.User, error)
 	GetUserById(ctx context.Context, id int64) (*models.User, error)
 	GetUserByEmail(ctx context.Context, email string) (*models.User, error)
 
@@ -15,6 +14,7 @@ type Repository interface {
 	UpdatePost(ctx context.Context, id int64, changes *models.Post) error
 	GetPostById(ctx context.Context, id int64) (*models.Post, error)
 	DeletePost(ctx context.Context, id int64, userId int64) error
+	GetAllPosts(ctx context.Context, page int64, limit int64) ([]*models.Post, error)
 
 	Close() error // Método para cerrar la conexión a la base de datos
 }
@@ -35,10 +35,6 @@ func Close() error {
 // User
 func CreateUser(ctx context.Context, user *models.User) error {
 	return implementation.CreateUser(ctx, user)
-}
-
-func GetAllUsers(ctx context.Context) ([]*models.User, error) {
-	return implementation.GetAllUsers(ctx)
 }
 
 func GetUserById(ctx context.Context, id int64) (*models.User, error) {
@@ -64,4 +60,8 @@ func GetPostById(ctx context.Context, id int64) (*models.Post, error) {
 
 func DeletePost(ctx context.Context, id int64, userId int64) error {
 	return implementation.DeletePost(ctx, id, userId)
+}
+
+func GetAllPosts(ctx context.Context, page int64, limit int64) ([]*models.Post, error) {
+	return implementation.GetAllPosts(ctx, page, limit)
 }

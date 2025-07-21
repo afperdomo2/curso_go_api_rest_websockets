@@ -93,7 +93,7 @@ func LoginHandler(s server.Server) http.HandlerFunc {
 		claims := &models.AppClaims{
 			UserId: user.Id,
 			StandardClaims: jwt.StandardClaims{
-				ExpiresAt: jwt.TimeFunc().Add(24 * time.Hour).Unix(),
+				ExpiresAt: jwt.TimeFunc().Add(48 * time.Hour).Unix(),
 			},
 		}
 		token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)

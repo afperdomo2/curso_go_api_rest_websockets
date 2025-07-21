@@ -171,6 +171,13 @@ curl --location 'http://localhost:5050/posts/2' \
 --header 'Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxMSwiZXhwIjoxNzUyOTg4MTU2fQ.QJEF2p18MeoALOxCAjQLKvz5xadIH9T-TC_ZaEvt2sY'
 ```
 
+### 🔒 Listar todos los Posts (con paginación)
+
+```sh
+curl --location 'http://localhost:5050/posts?page=1&limit=20' \
+--header 'Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoyLCJleHAiOjE3NTMyNDI3MDd9.Vkni6WtKJz9-f1oFw9f9a3_d872IuoN6gbtGj_aUQ5o'
+```
+
 ## 📄 Licencia
 
 Este proyecto está bajo la Licencia MIT. Ver `LICENSE` para más detalles.
