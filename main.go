@@ -37,9 +37,8 @@ func BindRoutes(s server.Server, r *mux.Router) {
 	// Middleware de autenticación
 	r.Use(middlewares.CheckAuthMiddleware(s))
 
+	// 1. Endpoints
 	r.HandleFunc("/", handlers.HomeHandler(s)).Methods(http.MethodGet)
-
-	// Aquí puedes agregar más rutas según sea necesario
 	r.HandleFunc("/signup", handlers.SingUpHandler(s)).Methods(http.MethodPost)
 	r.HandleFunc("/login", handlers.LoginHandler(s)).Methods(http.MethodPost)
 	r.HandleFunc("/user-info", handlers.GetUserFromTokenHandler(s)).Methods(http.MethodGet)
@@ -49,4 +48,7 @@ func BindRoutes(s server.Server, r *mux.Router) {
 	r.HandleFunc("/posts/{id:[0-9]+}", handlers.DeletePostHandler(s)).Methods(http.MethodDelete)
 	r.HandleFunc("/posts", handlers.CreatePostHandler(s)).Methods(http.MethodPost)
 	r.HandleFunc("/posts", handlers.GetAllPostsHandler(s)).Methods(http.MethodGet)
+
+	// 2. WebSocket
+	r.HandleFunc("/ws", s.Hub().WebSocketHandler)
 }

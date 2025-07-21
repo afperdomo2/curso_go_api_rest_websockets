@@ -1,4 +1,3 @@
-
 # API REST y Websockets en GO
 
 Este proyecto es un curso completo para desarrollar una API REST y Websockets usando Go (Golang). Incluye autenticación JWT, manejo de rutas HTTP y comunicación en tiempo real.
@@ -177,6 +176,42 @@ curl --location 'http://localhost:5050/posts/2' \
 curl --location 'http://localhost:5050/posts?page=1&limit=20' \
 --header 'Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoyLCJleHAiOjE3NTMyNDI3MDd9.Vkni6WtKJz9-f1oFw9f9a3_d872IuoN6gbtGj_aUQ5o'
 ```
+
+## 🌐 Conexión a WebSocket
+
+El proyecto expone un endpoint WebSocket en `/ws` para comunicación en tiempo real. Puedes conectarte y enviar/recibir mensajes usando herramientas como `websocat`, `wscat` o desde el navegador.
+
+### Ejemplo usando websocat
+
+```sh
+websocat ws://localhost:5050/ws
+```
+
+### Ejemplo usando curl (solo handshake)
+
+```sh
+curl --include --no-buffer ^
+  --header "Connection: Upgrade" ^
+  --header "Upgrade: websocket" ^
+  --header "Host: localhost:5050" ^
+  --header "Origin: http://localhost:5050" ^
+  http://localhost:5050/ws
+```
+
+### Ejemplo usando JavaScript en el navegador
+
+```js
+const ws = new WebSocket('ws://localhost:5050/ws');
+ws.onopen = () => {
+  console.log('Conectado al WebSocket');
+  ws.send(JSON.stringify({ type: 'mensaje', content: '¡Hola desde el cliente!' }));
+};
+ws.onmessage = (event) => {
+  console.log('Mensaje recibido:', event.data);
+};
+```
+
+Puedes enviar mensajes en formato JSON y recibir notificaciones en tiempo real. El servidor acepta múltiples clientes conectados simultáneamente.
 
 ## 📄 Licencia
 

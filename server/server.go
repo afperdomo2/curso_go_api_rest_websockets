@@ -5,6 +5,7 @@ package server
 import (
 	"afperdomo2/go/rest-ws/database"
 	"afperdomo2/go/rest-ws/repository"
+	"afperdomo2/go/rest-ws/websockets"
 	"context"
 	"errors"
 	"log"
@@ -17,6 +18,7 @@ import (
 // Proporciona acceso a la configuración del servidor
 type Server interface {
 	Config() *ServerConfig
+	Hub() *websockets.Hub // Método para obtener el Hub de WebSockets
 }
 
 // ServerConfig contiene todos los parámetros de configuración necesarios para el servidor
@@ -29,14 +31,21 @@ type ServerConfig struct {
 // Broker es la implementación concreta del servidor HTTP
 // Encapsula la configuración y el router de rutas
 type Broker struct {
-	config *ServerConfig // Configuración del servidor
-	router *mux.Router   // Router HTTP para manejar las rutas
+	config *ServerConfig   // Configuración del servidor
+	router *mux.Router     // Router HTTP para manejar las rutas
+	hub    *websockets.Hub // Hub de WebSockets
 }
 
 // Config devuelve la configuración actual del broker
 // Implementa la interfaz Server
 func (b *Broker) Config() *ServerConfig {
-	return b.config
+	return b.config // Retorna la configuración del servidor
+}
+
+// Hub devuelve una nueva instancia del Hub de WebSockets
+// Implementa la interfaz Server
+func (b *Broker) Hub() *websockets.Hub {
+	return b.hub // Retorna el Hub de WebSockets asociado al broker
 }
 
 // NewServer crea una nueva instancia del servidor HTTP
@@ -63,8 +72,9 @@ func NewServer(ctx context.Context, config *ServerConfig) (*Broker, error) {
 	// Crea una nueva instancia del broker con la configuración y un router vacío
 	// El router se inicializa aquí para que esté listo para usar al iniciar el servidor
 	broker := &Broker{
-		config: config,
-		router: mux.NewRouter(),
+		config: config,              // Asigna la configuración del servidor
+		router: mux.NewRouter(),     // Inicializa el router de Gorilla Mux
+		hub:    websockets.NewHub(), // Inicializa el Hub de WebSockets
 	}
 	return broker, nil
 }
@@ -87,6 +97,9 @@ func (b *Broker) Start(binder func(s Server, r *mux.Router)) {
 		log.Fatal("❌ Error connecting to database:", err)
 	}
 	repository.SetRepository(repo)
+
+	// Configura el Hub de WebSockets en el broker
+	go b.hub.Run() // Inicia el Hub en una goroutine para manejar conexiones WebSocket
 
 	log.Println("🚀 Server started on port", b.config.Port)
 	if err := http.ListenAndServe(b.config.Port, b.router); err != nil {

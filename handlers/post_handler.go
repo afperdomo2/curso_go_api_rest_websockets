@@ -6,6 +6,7 @@ import (
 	"afperdomo2/go/rest-ws/server"
 	"afperdomo2/go/rest-ws/services"
 	"encoding/json"
+	"log"
 	"net/http"
 	"strconv"
 
@@ -42,6 +43,14 @@ func CreatePostHandler(s server.Server) http.HandlerFunc {
 			http.Error(w, "Error creating post: "+err.Error(), http.StatusInternalServerError)
 			return
 		}
+
+		// Enviar mensaje a WebSocket
+		postMessage := models.WebSocketMessage{
+			Type:    "post_created",
+			Payload: post,
+		}
+		log.Println("📬 Enviando mensaje de WebSocket:", postMessage)
+		s.Hub().SendMessageToClients(postMessage, nil) // Broadcast a todos los clientes conectados
 
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusCreated)
