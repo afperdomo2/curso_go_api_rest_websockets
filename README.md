@@ -6,7 +6,7 @@ Este proyecto es un curso completo para desarrollar una API REST y Websockets us
 
 Se ha creado un Frontend para probar los Posts y el Websocket, en la ruta:
 
-<http://localhost:5500/test.html>
+<http://localhost:5050/test.html>
 
 ## 📋 Características
 
@@ -35,6 +35,11 @@ go mod init afperdomo2/go/rest-ws
 ```
 
 ### 2. Instalar dependencias
+
+```sh
+# Limpiar y actualizar los archivos de dependencias del proyecto (go.mod y go.sum).
+go mod tidy
+```
 
 ```sh
 # Instalar todas las dependencias necesarias
@@ -77,7 +82,7 @@ El servidor se ejecutará en `http://localhost:5050` (o el puerto configurado en
 
 ### Prerrequisitos
 
-- Go 1.19 o superior
+- Go 1.24 o superior
 - Git
 
 ### Comandos útiles
@@ -102,8 +107,11 @@ go mod tidy
 ## 🐳 Docker
 
 ```sh
-# Levantar la base de datos para los usuarios
-docker-compose up -d
+# Desarrollo (solo Base de datos)
+docker-compose -f docker-compose.dev.yaml up -d
+
+# Producción
+docker-compose -f docker-compose.prod.yaml up -d
 ```
 
 ## 🔎 Testear endpoints

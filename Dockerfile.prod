@@ -1,0 +1,31 @@
+ARG GO_VERSION=1.24.3
+
+FROM golang:${GO_VERSION}-alpine AS builder
+
+RUN go env -w GOPROXY=direct
+RUN apk add --no-cache git
+RUN apk add --no-cache ca-certificates \
+    && update-ca-certificates
+
+WORKDIR /app
+
+COPY ./go.mod ./
+COPY ./go.sum ./
+
+RUN go mod download
+
+COPY . .
+
+RUN go build \
+    -installsuffix 'static' \
+    -o /go_rest_api
+
+FROM scratch AS runner
+
+COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
+COPY .env ./
+COPY --from=builder /go_rest_api /go_rest_api
+
+EXPOSE 5050
+
+ENTRYPOINT ["/go_rest_api"]
