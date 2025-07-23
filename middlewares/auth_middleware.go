@@ -11,8 +11,9 @@ import (
 
 var (
 	PUBLIC_ENDPOINTS = []string{
-		"/signup",
-		"/login",
+		"/api/v1/signup",
+		"/api/v1/login",
+		"/api/v1/posts",
 	}
 )
 

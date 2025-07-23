@@ -2,6 +2,12 @@
 
 Este proyecto es un curso completo para desarrollar una API REST y Websockets usando Go (Golang). Incluye autenticación JWT, manejo de rutas HTTP y comunicación en tiempo real.
 
+![Posts Dashboard](assets/images/post_go.png)
+
+Se ha creado un Frontend para probar los Posts y el Websocket, en la ruta:
+
+<http://localhost:5500/test.html>
+
 ## 📋 Características
 
 - ✅ API REST completa con operaciones CRUD
@@ -40,6 +46,7 @@ go get github.com/joho/godotenv
 go get github.com/lib/pq
 go get github.com/segmentio/ksuid
 go get github.com/golang-jwt/jwt/v4
+go get github.com/rs/cors
 ```
 
 ### 3. Configurar variables de entorno
@@ -106,7 +113,7 @@ docker-compose up -d
 ### 🌎 Crear un nuevo usuario
 
 ```sh
-curl --location 'http://localhost:5050/signup' \
+curl --location 'http://localhost:5050/api/v1/signup' \
 --header 'Content-Type: application/json' \
 --data-raw '{
     "email": "usuario123@gmail.com",
@@ -117,7 +124,7 @@ curl --location 'http://localhost:5050/signup' \
 ### 🌎 Login
 
 ```sh
-curl --location 'http://localhost:5050/login' \
+curl --location 'http://localhost:5050/api/v1/login' \
 --header 'Content-Type: application/json' \
 --data-raw '{
     "email": "usuario123@gmail.com",
@@ -128,14 +135,14 @@ curl --location 'http://localhost:5050/login' \
 ### 🔒 Consultar los datos del usuario logueado
 
 ```sh
-curl --location 'http://localhost:5050/user-info' \
+curl --location 'http://localhost:5050/api/v1/user-info' \
 --header 'Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoyLCJleHAiOjE3NTMwNzM5NDd9.1a8kPMPdMR-EZ_p7e0ZwPV-sr3wkzJa1Qp_8fmFFp4E'
 ```
 
 ### 🔒 Crear un Post
 
 ```sh
-curl --location 'http://localhost:5050/posts' \
+curl --location 'http://localhost:5050/api/v1/posts' \
 --header 'Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJleHAiOjE3NTMwNzAyMzV9.EBjG2RFIFX7KTKhAuruW3qEPWMmSv8sK_X9FjqFjoyo' \
 --header 'Content-Type: application/json' \
 --data '{
@@ -147,7 +154,7 @@ curl --location 'http://localhost:5050/posts' \
 ### 🔒 Actualizar un Post existente
 
 ```sh
-curl --location --request PUT 'http://localhost:5050/posts/1' \
+curl --location --request PUT 'http://localhost:5050/api/v1/posts/1' \
 --header 'Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJleHAiOjE3NTMwNzAyMzV9.EBjG2RFIFX7KTKhAuruW3qEPWMmSv8sK_X9FjqFjoyo' \
 --header 'Content-Type: application/json' \
 --data '{
@@ -159,21 +166,21 @@ curl --location --request PUT 'http://localhost:5050/posts/1' \
 ### 🔒 Borrar un Post existente
 
 ```sh
-curl --location --request DELETE 'http://localhost:5050/posts/3' \
+curl --location --request DELETE 'http://localhost:5050/api/v1/posts/3' \
 --header 'Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJleHAiOjE3NTMwNzAyMzV9.EBjG2RFIFX7KTKhAuruW3qEPWMmSv8sK_X9FjqFjoyo'
 ```
 
 ### 🔒 Obtener un post por su ID
 
 ```sh
-curl --location 'http://localhost:5050/posts/2' \
+curl --location 'http://localhost:5050/api/v1/posts/2' \
 --header 'Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxMSwiZXhwIjoxNzUyOTg4MTU2fQ.QJEF2p18MeoALOxCAjQLKvz5xadIH9T-TC_ZaEvt2sY'
 ```
 
 ### 🔒 Listar todos los Posts (con paginación)
 
 ```sh
-curl --location 'http://localhost:5050/posts?page=1&limit=20' \
+curl --location 'http://localhost:5050/api/v1/posts?page=1&limit=20' \
 --header 'Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoyLCJleHAiOjE3NTMyNDI3MDd9.Vkni6WtKJz9-f1oFw9f9a3_d872IuoN6gbtGj_aUQ5o'
 ```
 

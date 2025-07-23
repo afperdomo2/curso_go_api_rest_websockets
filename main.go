@@ -34,20 +34,20 @@ func main() {
 }
 
 func BindRoutes(s server.Server, r *mux.Router) {
-	// Middleware de autenticación
-	r.Use(middlewares.CheckAuthMiddleware(s))
+	api := r.PathPrefix("/api/v1").Subrouter()  // Subrouter para agrupar las rutas de la API
+	api.Use(middlewares.CheckAuthMiddleware(s)) // Middleware de autenticación para todas las rutas de la API
 
 	// 1. Endpoints
-	r.HandleFunc("/", handlers.HomeHandler(s)).Methods(http.MethodGet)
-	r.HandleFunc("/signup", handlers.SingUpHandler(s)).Methods(http.MethodPost)
-	r.HandleFunc("/login", handlers.LoginHandler(s)).Methods(http.MethodPost)
-	r.HandleFunc("/user-info", handlers.GetUserFromTokenHandler(s)).Methods(http.MethodGet)
+	api.HandleFunc("/", handlers.HomeHandler(s)).Methods(http.MethodGet)
+	api.HandleFunc("/signup", handlers.SingUpHandler(s)).Methods(http.MethodPost)
+	api.HandleFunc("/login", handlers.LoginHandler(s)).Methods(http.MethodPost)
+	api.HandleFunc("/user-info", handlers.GetUserFromTokenHandler(s)).Methods(http.MethodGet)
 
-	r.HandleFunc("/posts/{id:[0-9]+}", handlers.GetPostByIdHandler(s)).Methods(http.MethodGet)
-	r.HandleFunc("/posts/{id:[0-9]+}", handlers.UpdatePostHandler(s)).Methods(http.MethodPut)
-	r.HandleFunc("/posts/{id:[0-9]+}", handlers.DeletePostHandler(s)).Methods(http.MethodDelete)
-	r.HandleFunc("/posts", handlers.CreatePostHandler(s)).Methods(http.MethodPost)
-	r.HandleFunc("/posts", handlers.GetAllPostsHandler(s)).Methods(http.MethodGet)
+	api.HandleFunc("/posts/{id:[0-9]+}", handlers.GetPostByIdHandler(s)).Methods(http.MethodGet)
+	api.HandleFunc("/posts/{id:[0-9]+}", handlers.UpdatePostHandler(s)).Methods(http.MethodPut)
+	api.HandleFunc("/posts/{id:[0-9]+}", handlers.DeletePostHandler(s)).Methods(http.MethodDelete)
+	api.HandleFunc("/posts", handlers.CreatePostHandler(s)).Methods(http.MethodPost)
+	api.HandleFunc("/posts", handlers.GetAllPostsHandler(s)).Methods(http.MethodGet)
 
 	// 2. WebSocket
 	r.HandleFunc("/ws", s.Hub().WebSocketHandler)

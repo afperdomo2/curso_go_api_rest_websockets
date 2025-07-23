@@ -12,6 +12,7 @@ import (
 	"net/http"
 
 	"github.com/gorilla/mux"
+	"github.com/rs/cors"
 )
 
 // Server define la interfaz que debe implementar cualquier servidor
@@ -92,6 +93,9 @@ func (b *Broker) Start(binder func(s Server, r *mux.Router)) {
 	b.router = mux.NewRouter()
 	binder(b, b.router)
 
+	// corsHandler := cors.Default().Handler(b.router) // Configura CORS para el router
+	corsHandler := cors.AllowAll().Handler(b.router)
+
 	repo, err := database.NewPostgresRepository(b.config.DatabaseURL)
 	if err != nil {
 		log.Fatal("❌ Error connecting to database:", err)
@@ -102,7 +106,7 @@ func (b *Broker) Start(binder func(s Server, r *mux.Router)) {
 	go b.hub.Run() // Inicia el Hub en una goroutine para manejar conexiones WebSocket
 
 	log.Println("🚀 Server started on port", b.config.Port)
-	if err := http.ListenAndServe(b.config.Port, b.router); err != nil {
+	if err := http.ListenAndServe(b.config.Port, corsHandler); err != nil {
 		log.Fatal("❌ Error starting server:", err)
 	}
 }
