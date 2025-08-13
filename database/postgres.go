@@ -18,6 +18,11 @@ func NewPostgresRepository(url string) (*PostgresRepository, error) {
 	if err != nil {
 		return nil, err
 	}
+	// Verificar que la conexión sea válida realizando un ping
+	if err := db.Ping(); err != nil {
+		db.Close()
+		return nil, err
+	}
 	return &PostgresRepository{db: db}, nil
 }
 
